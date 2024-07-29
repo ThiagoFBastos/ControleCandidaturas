@@ -1,0 +1,86 @@
+﻿@model ListagemCandidaturaViewModel
+@{
+    ViewData["Title"] = "Lista de candidaturas";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if(Model != null)
+{
+    <table class = "table">
+        <tr>
+            <th>Cargo</th>
+            <th>Empresa</th>
+            <th>Data</th>
+            <th>Status</th>
+        </tr>
+    
+                @foreach(CandidaturaDTO candidatura in Model.Candidaturas)
+                {
+                    <tr>
+                        <td>
+                            <a asp-route-id = "@candidatura.Id" asp-controller="Candidatura" asp-action="Update">
+                                @if(candidatura.Cargo.Length > 45)
+                                {
+                                    @(candidatura.Cargo.Substring(0, 45)+"...")
+                                }
+                                else
+                                {
+                                    @candidatura.Cargo
+                                }
+                            </a>
+                        </td>
+                        <td>
+                            @if(candidatura.Empresa.Length > 45)
+                            {
+                                @(candidatura.Empresa.Substring(0, 45)+"...")
+                            }
+                            else
+                            {
+                                @candidatura.Empresa
+                            }
+                        </td>
+                        <td>@candidatura.DataSubmissao.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @foreach(Candidatura.CandidaturaStatus status in Enum.GetValues(typeof(Candidatura.CandidaturaStatus)))
+                            {
+                                @if((int)status == candidatura.Status)
+                                {
+                                    @status.ToString()
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+        
+     </table>
+    <nav>
+        <ul class="pagination justify-content-center">
+            @if (Model.Page > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Candidatura" asp-action="All" asp-route-page="@(Model.Page-1)" asp-route-isArchived="@Model.IsArchived">Anterior</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Anterior</a>
+                </li>
+            }
+
+            @if (Model.Page * Model.PageSize < Model.CandidaturasCount)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Candidatura" asp-action="All" asp-route-page="@(Model.Page+1)" asp-route-isArchived="@Model.IsArchived">Próximo</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Próximo</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

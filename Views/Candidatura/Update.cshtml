@@ -1,0 +1,175 @@
+﻿
+@model CandidaturaDTO
+
+@{
+	ViewData["Title"] = Model.Cargo;
+}
+
+@if(Model != null) 
+{
+	<div class="row">
+		<div class="col-md-4">
+			<div class = "d-grid gap-2">
+				<a asp-route-candidaturaId="@Model.Id" asp-controller="Relatorio" asp-action="Add" class = "btn btn-secondary">Inserir novo relatório</a>
+			</div>
+			@if(Model.Relatorios != null)
+			{
+				<table class="table">
+					<tr>
+						<th>Título</th>
+						<th>Data</th>
+					</tr>
+					@foreach(RelatorioDTO relatorio in Model.Relatorios)
+					{
+						<tr>
+							<td>
+								<a asp-route-id="@relatorio.Id" asp-controller="Relatorio" asp-action="Update">
+									@if(relatorio.Titulo.Length > 30)
+									{
+										@(relatorio.Titulo.Substring(0, 30)+"...")
+									}
+									else
+									{
+										@relatorio.Titulo
+									}
+								</a>
+							</td>
+							<td>@relatorio.DataCadastro.ToString("dd/MM/yyyy")</td>
+						</tr>
+					}
+				</table>
+			}
+		</div>
+		<div class="col-md-8">
+			<form asp-route-id="@Model.Id" asp-controller="Candidatura" asp-action="Update" method="post">
+
+				<div class="form-group">
+					<label asp-for="Cargo">Cargo</label>
+					<input type="text" class="form-control" asp-for="Cargo" value="@Model.Cargo" />
+					<span asp-validation-for="Cargo" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Empresa">Empresa</label>
+					<input type="text" class="form-control" asp-for="Empresa" value="@Model.Empresa" />
+					<span asp-validation-for="Empresa" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Plataforma">Plataforma</label>
+					<input type="text" class="form-control" asp-for="Plataforma" value="@Model.Plataforma" />
+					<span asp-validation-for="Plataforma" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Url">Url</label>
+					<input type="url" class="form-control" asp-for="Url" value="@Model.Url" />
+					<span asp-validation-for="Url" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Status">Status</label>
+					<select class="form-control" asp-for="Status">
+						@foreach (Candidatura.CandidaturaStatus status in Enum.GetValues(typeof(Candidatura.CandidaturaStatus)))
+						{
+							@if ((int)status == Model.Status)
+							{
+								<option value="@((int)status)" selected>@status.ToString()</option>
+							}
+							else
+							{
+								<option value="@((int)status)">@status.ToString()</option>
+							}
+						}
+					</select>
+					<span asp-validation-for="Status" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Salario">Salário</label>
+					<input type="text" class="form-control" asp-for="Salario" value="@Model.Salario" />
+					<span asp-validation-for="Salario" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<label>Data da submissão</label>
+					<input type="date" class="form-control" value="@Model.DataSubmissao.ToString("yyyy-MM-dd")" readonly />
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Grau">Senioridade</label>
+					<select class="form-control" asp-for="Grau">
+						@if(Model.Grau is null)
+						{
+							<option value="" selected>Não especificado</option>
+						}
+						else
+						{
+							<option value="">Não especificado</option>
+						}
+						@foreach (Candidatura.Senioridade senioridade in Enum.GetValues(typeof(Candidatura.Senioridade)))
+						{
+							@if ((int)senioridade == Model.Grau)
+							{
+								<option value="@((int)senioridade)" selected>@senioridade.ToString()</option>
+							}
+							else
+							{
+								<option value="@((int)senioridade)">@senioridade.ToString()</option>
+							}
+						}
+					</select>
+					<span asp-validation-for="Grau" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Descricao">Descrição</label>
+					<textarea class="form-control" asp-for="Descricao">@Model.Descricao</textarea>
+					<span asp-validation-for="Descricao" class="text-danger"></span>
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Modo">Modo de Trabalho</label>
+					<select class="form-control" asp-for="Modo">
+						@if (Model.Modo is null)
+						{
+							<option value="" selected>Não especificado</option>
+						}
+						else
+						{
+							<option value="">Não especificado</option>
+						}
+						@foreach (Candidatura.ModoDeTrabalho modo in Enum.GetValues(typeof(Candidatura.ModoDeTrabalho)))
+						{
+							@if ((int)modo == Model.Modo)
+							{
+								<option value="@((int)modo)" selected>@modo.ToString()</option>
+							}
+							else
+							{
+								<option value="@((int)modo)">@modo.ToString()</option>
+							}
+						}
+					</select>
+					<span asp-validation-for="Modo" class="text-danger"></span>
+				</div>
+				<br />
+				<div class="text-end">
+					<button type="submit" class="btn btn-primary">Modificar</button>
+					<a href = "#" id = "btndelete" class="btn btn-danger">Excluir</a>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<form id="formdelete" asp-route-id="@Model.Id" asp-controller = "Candidatura" asp-action = "Delete" method="post"></form>
+
+	<script type="text/javascript">
+		const btndelete = document.getElementById('btndelete');
+
+		btndelete.addEventListener("click", function () {
+			const formdelete = document.getElementById('formdelete');
+			formdelete.submit();
+		});
+	</script>
+}

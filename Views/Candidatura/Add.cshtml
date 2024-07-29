@@ -1,0 +1,114 @@
+﻿@model CandidaturaRequestDTO;
+@{
+    ViewData["Title"] = "Registro de candidatura";
+
+    Array senioridade = Enum.GetValues(typeof(Candidatura.Senioridade));
+    Array status = Enum.GetValues(typeof(Candidatura.CandidaturaStatus));
+    Array modoDeTrabalho = Enum.GetValues(typeof(Candidatura.ModoDeTrabalho));
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-controller="Candidatura" asp-action="Add" method="post">
+    <div class = "form-group">
+        <label asp-for="Cargo">Cargo</label>
+        <input type="text" class="form-control" asp-for="Cargo" />
+        <span asp-validation-for="Cargo" class="text-danger" ></span>
+    </div>
+	<div class="form-group">
+        <label asp-for="Empresa">Empresa</label>
+        <input type="text" class="form-control" asp-for="Empresa" />
+        <span asp-validation-for="Empresa" class="text-danger" ></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Plataforma">Plataforma</label>
+        <input type="text" class="form-control" asp-for="Plataforma" />
+        <span asp-validation-for="Plataforma" class="text-danger" ></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Url">URL</label>
+        <input type="url" class="form-control" asp-for="Url" />
+        <span asp-validation-for="Url" class="text-danger" ></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Status">Status</label>
+        <select class="form-control" asp-for="Status">
+            @for (int i = 0; i < status.Length; ++i)
+            {
+                @if(Model != null && Model.Status == (int)status.GetValue(i))
+                {
+                    <option value="@((int)status.GetValue(i))">@status.GetValue(i)?.ToString()</option>
+                }
+                else
+                {
+                    <option value="@((int)status.GetValue(i))">@status.GetValue(i)?.ToString()</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Salario">Salário</label>
+        <input type="text" class="form-control" asp-for="Salario" />
+        <span asp-validation-for="Salario" class="text-danger" ></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Grau">Grau</label>
+        <select class="form-control" asp-for="Grau">
+            @if (Model != null && Model.Grau == null)
+            {
+                <option value="" selected>Não especificado</option>
+            }
+            else
+            {
+                <option value="">Não especificado</option>
+            }
+            @for(int i = 0; i < senioridade.Length; ++i)
+            {
+                @if(Model != null && Model.Grau == (int)senioridade.GetValue(i))
+                {
+                    <option value="@((int)senioridade.GetValue(i))" selected>@senioridade.GetValue(i)?.ToString()</option>
+                }
+                else
+                {
+                    <option value="@((int)senioridade.GetValue(i))">@senioridade.GetValue(i)?.ToString()</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="Grau" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Descricao">Descrição</label>
+        <textarea asp-for="Descricao" class="form-control"></textarea>
+        <span asp-validation-for="Descricao" class="text-danger" ></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Modo">Modo de Trabalho</label>
+        <select class="form-control" asp-for="Modo">
+            @if (Model != null && Model.Modo == null)
+			{
+				<option value="" selected>Não especificado</option>
+			}
+			else
+			{
+				<option value="">Não especificado</option>
+			}
+            @for(int i = 0; i < modoDeTrabalho.Length; ++i)
+            {
+                @if(Model != null && Model.Modo == (int)modoDeTrabalho.GetValue(i))
+                {
+                    <option value="@((int)modoDeTrabalho?.GetValue(i))" selected>@modoDeTrabalho.GetValue(i)?.ToString()</option>
+                }
+                else
+                {
+                    <option value="@((int)modoDeTrabalho?.GetValue(i))">@modoDeTrabalho.GetValue(i)?.ToString()</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="Modo" class="text-danger"></span>
+    </div>
+    <br />
+    <div class = "d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Registrar</button>
+    </div>
+</form>

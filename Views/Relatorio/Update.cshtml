@@ -1,0 +1,41 @@
+﻿@model RelatorioDTO
+@{
+	ViewData["Title"] = $"Relatório {Model.Titulo}";
+}
+
+@if(Model != null)
+{
+	<form id="deleteform" asp-route-id="@Model.Id" asp-controller="Relatorio" asp-action="Delete" method="post"></form>
+
+	<form asp-route-id="@Model.Id" asp-controller="Relatorio" asp-action="Update" method="post">
+		<div class="form-group">
+			<label asp-for="Titulo">Título</label>
+			<input type="text" asp-for="Titulo" class="form-control" value="@Model.Titulo" />
+			<span asp-validation-for="Titulo" class="text-danger"></span>
+		</div>
+		<div class="form-group">
+			<label asp-for="Descricao">Descrição</label>
+			<textarea asp-for="Descricao" class="form-control">@Model.Descricao</textarea>
+			<span asp-validation-for="Descricao" class="text-danger"></span>
+		</div>
+		<div class="form-group">
+			<label>Data de criação</label>
+			<input type="date" class="form-control" value="@Model.DataCadastro.ToString("yyyy-MM-dd")" readonly />
+		</div>
+		<br />
+		<div class="text-end">
+			<button class="btn btn-primary" type="submit">Modificar</button>
+			<a href = "#" class="btn btn-danger" id = "btnExclui">Excluir</a>
+			<a asp-controller="Candidatura" asp-action="Update" asp-route-id="@Model.CandidaturaId" class = "btn btn-success">Voltar para candidatura</a>
+		</div>
+	</form>
+
+	<script type="text/javascript">
+		const btnExclui = document.getElementById("btnExclui");
+
+		btnExclui.addEventListener("click", function () {
+			const form = document.getElementById("deleteform");
+			form.submit();
+		});
+	</script>
+}
