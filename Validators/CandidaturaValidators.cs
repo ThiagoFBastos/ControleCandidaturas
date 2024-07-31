@@ -23,7 +23,11 @@ namespace ControleCandidaturas.Validators
                 .When(e => e.Plataforma != null);
 
             RuleFor(e => e.Url)
-                .Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute)).WithMessage("A Url deve representar um endereço eletrônico válido.")
+                .Must(url =>
+                {
+                    Uri result;
+                    return Uri.TryCreate(url, UriKind.Absolute, out result) && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
+                }).WithMessage("A Url deve representar um endereço eletrônico válido.")
                 .When(e => e.Url != null);
 
             RuleFor(e => e.Salario)
