@@ -16,6 +16,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<CandidaturaValidators>();
 builder.Services.AddValidatorsFromAssemblyContaining<RelatorioValidators>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

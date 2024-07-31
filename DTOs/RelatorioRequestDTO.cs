@@ -8,5 +8,7 @@ namespace ControleCandidaturas.DTOs
         public required string Titulo { get; set; }
         [Required(ErrorMessage = "A descrição é necessária.")]
         public required string Descricao { get; set; }
+
+        public required Guid? CandidaturaId;
     }
 }

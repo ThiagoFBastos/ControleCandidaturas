@@ -14,6 +14,9 @@ namespace ControleCandidaturas.Validators
             RuleFor(e => e.Descricao)
                 .NotNull().WithMessage("A descrição não pode ser nula.")
                 .NotEmpty().WithMessage("A descrição não pode ser vazia.");
+
+            RuleFor(e => e.CandidaturaId)
+                .Null().WithMessage("A candidatura do relatório não pode ser atribuida.");
         }
     }
 }

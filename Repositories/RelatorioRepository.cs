@@ -3,41 +3,32 @@ using ControleCandidaturas.Models;
 using ControleCandidaturas.Data;
 using Microsoft.EntityFrameworkCore;
 using ControleCandidaturas.Exceptions;
+using AutoMapper;
 
 namespace ControleCandidaturas.Repositories
 {
     public class RelatorioRepository: IRelatorioRepository
     {
         private readonly BancoContext _bancoContext;
-
-        public RelatorioRepository(BancoContext bancoContext)
+        private readonly IMapper _mapper;
+        public RelatorioRepository(BancoContext bancoContext, IMapper mapper)
         {
             this._bancoContext = bancoContext;
-        }
-
-        private static RelatorioDTO RelatorioModelToRelatorioDTO(Relatorio relatorio)
-        {
-            return new RelatorioDTO() { Id = relatorio.Id, Titulo = relatorio.Titulo, Descricao = relatorio.Descricao, DataCadastro = relatorio.DataCadastro, CandidaturaId = relatorio.CandidaturaId };
-        }
-
-        private static Relatorio RelatorioRequestDTOToRelatorio(Guid candidaturaId, RelatorioRequestDTO relatorio)
-        {
-            return new Relatorio() { Titulo = relatorio.Titulo, Descricao = relatorio.Descricao, CandidaturaId = candidaturaId };
+            this._mapper = mapper;
         }
 
         public async Task<RelatorioDTO> Add(Guid candidaturaId, RelatorioRequestDTO relatorio)
         {
-            ICandidaturaRepository candidaturaRepositorio = new CandidaturaRepository(this._bancoContext);
-
-            if (!await candidaturaRepositorio.Exists(candidaturaId))
+            if (!await this.ExistsCandidatura(candidaturaId))
                 throw new NotFoundException("Candidatura não existe.");
 
-            Relatorio entidade = RelatorioRequestDTOToRelatorio(candidaturaId, relatorio);
+            relatorio.CandidaturaId = candidaturaId;
+            Relatorio entidade = this._mapper.Map<Relatorio>(relatorio);
 
             this._bancoContext.Add(entidade);
             await this._bancoContext.SaveChangesAsync();
 
-            return RelatorioModelToRelatorioDTO(entidade);
+            return this._mapper.Map<RelatorioDTO>(entidade);
         }
 
         public async Task<RelatorioDTO?> Find(Guid id)
@@ -47,7 +38,7 @@ namespace ControleCandidaturas.Repositories
             if (relatorio == null)
                 return null;
 
-            return new RelatorioDTO() { Id = relatorio.Id, Titulo = relatorio.Titulo, Descricao = relatorio.Descricao, DataCadastro = relatorio.DataCadastro, CandidaturaId = relatorio.CandidaturaId };
+            return this._mapper.Map<RelatorioDTO>(relatorio);
         }
 
         public async Task Delete(Guid id)
@@ -79,13 +70,12 @@ namespace ControleCandidaturas.Repositories
 
             await this._bancoContext.SaveChangesAsync();
 
-            return RelatorioModelToRelatorioDTO(entidade);
+            return this._mapper.Map<RelatorioDTO>(entidade);
         }
 
         public async Task<bool> ExistsCandidatura(Guid candidaturaId)
         {
-            ICandidaturaRepository repositorio = new CandidaturaRepository(this._bancoContext);
-            return await repositorio.Exists(candidaturaId);
+            return await this._bancoContext.Candidaturas.AnyAsync(e => e.Id == candidaturaId);
         }
     }
 }
