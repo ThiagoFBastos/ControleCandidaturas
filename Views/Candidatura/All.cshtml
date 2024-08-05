@@ -56,6 +56,11 @@
      </table>
     <nav>
         <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link">
+                    @(int.Min(Model.CandidaturasCount, Model.Page * Model.PageSize)) de @Model.CandidaturasCount
+                </a>
+            </li>
             @if (Model.Page > 1)
             {
                 <li class="page-item">

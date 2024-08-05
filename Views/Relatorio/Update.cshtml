@@ -5,6 +5,26 @@
 
 @if(Model != null)
 {
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Exclusão</h5>
+				<button type="button" class="close" data-bs-dismiss="modal">
+				<span>&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				Quer excluir permanantemente este relatório?
+			</div>
+			<div class="modal-footer">
+				<button id="btnExclui" type="button" class="btn btn-danger">Excluir</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+			</div>
+			</div>
+		</div>
+	</div>
+
 	<form id="deleteform" asp-route-id="@Model.Id" asp-controller="Relatorio" asp-action="Delete" method="post"></form>
 
 	<form asp-route-id="@Model.Id" asp-controller="Relatorio" asp-action="Update" method="post">
@@ -15,7 +35,7 @@
 		</div>
 		<div class="form-group">
 			<label asp-for="Descricao">Descrição</label>
-			<textarea asp-for="Descricao" class="form-control">@Model.Descricao</textarea>
+			<textarea asp-for="Descricao" class="form-control" rows="10">@Model.Descricao</textarea>
 			<span asp-validation-for="Descricao" class="text-danger"></span>
 		</div>
 		<div class="form-group">
@@ -25,7 +45,7 @@
 		<br />
 		<div class="text-end">
 			<button class="btn btn-primary" type="submit">Modificar</button>
-			<a href = "#" class="btn btn-danger" id = "btnExclui">Excluir</a>
+			<a data-bs-toggle="modal" data-bs-target="#deleteModal" href = "#" class="btn btn-danger" id = "btnExclui">Excluir</a>
 			<a asp-controller="Candidatura" asp-action="Update" asp-route-id="@Model.CandidaturaId" class = "btn btn-success">Voltar para candidatura</a>
 		</div>
 	</form>
